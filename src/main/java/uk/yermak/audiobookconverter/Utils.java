@@ -75,7 +75,7 @@ public class Utils {
     public static String getOuputFilenameSuggestion(AudioBookInfo bookInfo) {
         String filenameFormat = AppSetting.getProperty("filename_format");
         if (filenameFormat == null) {
-            filenameFormat = "<WRITER> <if(SERIES)> - [<SERIES><if(BOOK_NUMBER)> - <BOOK_NUMBER; format=\"%,02d\"><endif>] <endif> - <TITLE><if(NARRATOR)> (<NARRATOR>)<endif>";
+            filenameFormat = "<WRITER> - <TITLE>.m4b";
             AppSetting.setProperty("filename_format", filenameFormat);
         }
 
@@ -85,14 +85,14 @@ public class Utils {
 
         ST filenameTemplate = new ST(g, filenameFormat);
         filenameTemplate.add("WRITER", bookInfo.writer().trimToNull());
-        filenameTemplate.add("TITLE", bookInfo.title().trimToNull());
+        filenameTemplate.add("TITLE", bookInfo.title().trimToNull().replaceFirst(" #(\\d+): ", ", Book $1 - "));
         filenameTemplate.add("SERIES", bookInfo.series().trimToNull());
         filenameTemplate.add("NARRATOR", bookInfo.narrator().trimToNull());
         filenameTemplate.add("BOOK_NUMBER", bookInfo.bookNumber().zeroToNull());
         filenameTemplate.add("YEAR", bookInfo.year().trimToNull());
 
         String result = filenameTemplate.render();
-        char[] toRemove = new char[]{':', '\\', '/', '>', '<', '|', '?', '*', '"'};
+        char[] toRemove = new char[]{':', '\\', '/', '>', '<', '|', '?', '*', '"', '#'};
         for (char c : toRemove) {
             result = StringUtils.remove(result, c);
         }
