@@ -68,7 +68,7 @@ public class AudiobookConverter extends Application {
     final static Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
     public static void checkNewVersion() {
-        Executors.newSingleThreadExecutor().submit(new VersionChecker());
+        // Executors.newSingleThreadExecutor().submit(new VersionChecker());
     }
 
     @Override
@@ -111,12 +111,12 @@ public class AudiobookConverter extends Application {
     }
 
 
-    private static String readStringFromURL(String requestURL) throws IOException {
-        try (Scanner scanner = new Scanner(new URL(requestURL).openStream(), StandardCharsets.UTF_8.toString())) {
-            scanner.useDelimiter("\\A");
-            return scanner.hasNext() ? scanner.next() : "";
-        }
-    }
+    // private static String readStringFromURL(String requestURL) throws IOException {
+    //     try (Scanner scanner = new Scanner(new URL(requestURL).openStream(), StandardCharsets.UTF_8.toString())) {
+    //         scanner.useDelimiter("\\A");
+    //         return scanner.hasNext() ? scanner.next() : "";
+    //     }
+    // }
 
     public static ConversionContext getContext() {
         return context;
@@ -132,29 +132,29 @@ public class AudiobookConverter extends Application {
                 .text(finalOutputDestination).show();
     }
 
-    static class VersionChecker implements Runnable {
-        @Override
-        public void run() {
-            try {
-                String platform = Platform.current.loadAppProperties().getProperty("platform");
-                if (platform == null) platform = "version";
-                if ("steam".equals(platform)) return;
-                String version = readStringFromURL("https://raw.githubusercontent.com/yermak/AudioBookConverter/version/" + platform + ".txt");
-                if (!Version.getVersionString().equals(StringUtils.trim(version))) {
-                    logger.info("New version found: {}", version);
-                    javafx.application.Platform.runLater(() -> {
-                        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-                        alert.setTitle("New Version Available!");
-                        alert.setContentText("Would you like to download new version?");
-                        Optional<ButtonType> result = alert.showAndWait();
-                        if ((result.isPresent()) && (result.get() == ButtonType.OK)) {
-                            AudiobookConverter.getEnv().showDocument("https://store.steampowered.com/app/1529240/AudioBookConverter/");
-                        }
-                    });
-                }
-            } catch (IOException e) {
-                logger.info(e.getMessage());
-            }
-        }
-    }
+    // static class VersionChecker implements Runnable {
+    //     @Override
+    //     public void run() {
+    //         try {
+    //             String platform = Platform.current.loadAppProperties().getProperty("platform");
+    //             if (platform == null) platform = "version";
+    //             if ("steam".equals(platform)) return;
+    //             String version = readStringFromURL("https://raw.githubusercontent.com/yermak/AudioBookConverter/version/" + platform + ".txt");
+    //             if (!Version.getVersionString().equals(StringUtils.trim(version))) {
+    //                 logger.info("New version found: {}", version);
+    //                 javafx.application.Platform.runLater(() -> {
+    //                     Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+    //                     alert.setTitle("New Version Available!");
+    //                     alert.setContentText("Would you like to download new version?");
+    //                     Optional<ButtonType> result = alert.showAndWait();
+    //                     if ((result.isPresent()) && (result.get() == ButtonType.OK)) {
+    //                         AudiobookConverter.getEnv().showDocument("https://store.steampowered.com/app/1529240/AudioBookConverter/");
+    //                     }
+    //                 });
+    //             }
+    //         } catch (IOException e) {
+    //             logger.info(e.getMessage());
+    //         }
+    //     }
+    // }
 }
